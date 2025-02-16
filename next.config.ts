@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  env: {
+    WS_NO_BUFFER_UTIL: 'true',
+  }
 };
 
 export default nextConfig;
