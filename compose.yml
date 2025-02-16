@@ -1,0 +1,14 @@
+services:
+  client:
+    build:
+      context: .
+      dockerfile: docker/client-dev/Dockerfile
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+      - "9230:9230"
+    volumes:
+      - .:/usr/local/app
+      - /usr/local/app/.next
+      - /usr/local/app/.pnpm-store
+      - /usr/local/app/node_modules
