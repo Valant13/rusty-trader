@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { getMapMarkers } from "@/app/lib/rust"
+import { fetchTradeOffers } from "@/app/lib/rust-client"
 
 export async function GET() {
-  let mapMarkers = await getMapMarkers();
+  const tradeOffers = await fetchTradeOffers();
 
-  return NextResponse.json(mapMarkers);
+  return NextResponse.json(tradeOffers);
 }
