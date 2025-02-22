@@ -1,19 +1,7 @@
-import {getTradeOffers, SearchMode, SortOrder} from "@/app/lib/rust-service"
+import {getTradeOffers, SelectParams} from "@/app/lib/rust-service"
 
-export default async function InvoicesTable({
-  sortOrder,
-  searchMode,
-  searchQuery
-}: {
-  sortOrder?: SortOrder;
-  searchMode?: SearchMode;
-  searchQuery?: string;
-}) {
-  const tradeOffers = await getTradeOffers(
-    sortOrder || SortOrder.Asc,
-    searchMode || SearchMode.Buy,
-    searchQuery
-  );
+export default async function InvoicesTable({ selectParams }: { selectParams: SelectParams }) {
+  const tradeOffers = await getTradeOffers(selectParams);
 
   return (
     <table>
