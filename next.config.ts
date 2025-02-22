@@ -5,9 +5,7 @@ const nextConfig: NextConfig = {
     WS_NO_BUFFER_UTIL: 'true',
   },
   outputFileTracingIncludes: {
-    '**/*': [
-      './app/rustplus.proto'
-    ]
+    '/api/read-proto': ['./app/rustplus.proto']
   }
 };
 
