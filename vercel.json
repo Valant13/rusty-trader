@@ -1,3 +1,7 @@
 {
-  "includeFiles": ["app/rustplus.proto"]
+  "functions": {
+    "app/api/read-proto/route.tsx": {
+      "includeFiles": "app/rustplus.proto"
+    }
+  }
 }
