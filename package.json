@@ -26,7 +26,8 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "@liamcottle/rustplus.js": "patches/@liamcottle__rustplus.js.patch"
+      "@liamcottle/rustplus.js": "patches/@liamcottle__rustplus.js.patch",
+      "protobufjs@7.4.0": "patches/protobufjs@7.4.0.patch"
     }
   }
 }

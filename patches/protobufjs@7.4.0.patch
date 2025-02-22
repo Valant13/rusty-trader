@@ -1,0 +1,14 @@
+diff --git a/src/root.js b/src/root.js
+index 2776f96e42994ce2e29aaed8b2ed9ff923b97e93..0ba09b577f1f1b0020fd114cc79e634c97416f5c 100644
+--- a/src/root.js
++++ b/src/root.js
+@@ -178,6 +178,9 @@ Root.prototype.load = function load(filename, options, callback) {
+             }
+             process(filename, source);
+         } else {
++            console.log(filename + ' start loading');
++            util.fs.readFileSync(filename).toString("utf8");
++            console.log(filename + ' end loading');
+             ++queued;
+             self.fetch(filename, function(err, source) {
+                 --queued;
