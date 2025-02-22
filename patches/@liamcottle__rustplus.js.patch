@@ -1,7 +1,7 @@
-diff --git a/node_modules/@liamcottle/rustplus.js/rustplus.js b/node_modules/@liamcottle/rustplus.js/rustplus.js
-index 4497096..0002f19 100644
---- a/node_modules/@liamcottle/rustplus.js/rustplus.js
-+++ b/node_modules/@liamcottle/rustplus.js/rustplus.js
+diff --git a/rustplus.js b/rustplus.js
+index 44970966e617ed7e369e251690a714dbd830e5cb..94e22a2f7933f8dfb9c36560a0af939f82db8b03 100644
+--- a/rustplus.js
++++ b/rustplus.js
 @@ -44,7 +44,7 @@ class RustPlus extends EventEmitter {
      connect() {
  
