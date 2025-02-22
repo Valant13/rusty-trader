@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   '@liamcottle/rustplus.js':
-    hash: d3ar2o24ba43ad35s2l4tedrka
+    hash: m7guegrvhr5qqf3oz6acmj7d5e
     path: patches/@liamcottle__rustplus.js.patch
 
 importers:
@@ -18,7 +18,7 @@ importers:
         version: 0.0.4
       '@liamcottle/rustplus.js':
         specifier: 2.5.0
-        version: 2.5.0(patch_hash=d3ar2o24ba43ad35s2l4tedrka)
+        version: 2.5.0(patch_hash=m7guegrvhr5qqf3oz6acmj7d5e)
       next:
         specifier: 15.1.7
         version: 15.1.7(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -2105,7 +2105,7 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@liamcottle/rustplus.js@2.5.0(patch_hash=d3ar2o24ba43ad35s2l4tedrka)':
+  '@liamcottle/rustplus.js@2.5.0(patch_hash=m7guegrvhr5qqf3oz6acmj7d5e)':
     dependencies:
       '@liamcottle/push-receiver': 0.0.3
       axios: 1.7.9

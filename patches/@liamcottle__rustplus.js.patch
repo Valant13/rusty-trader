@@ -1,5 +1,5 @@
 diff --git a/rustplus.js b/rustplus.js
-index 44970966e617ed7e369e251690a714dbd830e5cb..94e22a2f7933f8dfb9c36560a0af939f82db8b03 100644
+index 44970966e617ed7e369e251690a714dbd830e5cb..0002f1944f985dc222835f998f66dd4ebbef70ec 100644
 --- a/rustplus.js
 +++ b/rustplus.js
 @@ -44,7 +44,7 @@ class RustPlus extends EventEmitter {
@@ -7,7 +7,7 @@ index 44970966e617ed7e369e251690a714dbd830e5cb..94e22a2f7933f8dfb9c36560a0af939f
  
          // load protobuf then connect
 -        protobuf.load(path.resolve(__dirname, "rustplus.proto")).then((root) => {
-+        protobuf.load(process.cwd() + "/app/rustplus.proto").then((root) => {
++        protobuf.load(path.join(process.cwd(), "rustplus.proto")).then((root) => {
  
              // make sure existing connection is disconnected before connecting again.
              if(this.websocket){
