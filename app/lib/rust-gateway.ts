@@ -11,7 +11,7 @@ const rustplus = new RustPlus(
 );
 
 rustplus.on('request', (request: any) => {
-  console.log('RustPlus Request', JSON.stringify(request))
+  console.log('RustPlus Request', request)
 });
 
 rustplus.on('error', (err: any) => {
