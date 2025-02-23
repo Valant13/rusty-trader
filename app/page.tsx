@@ -1,6 +1,6 @@
 import Search from '@/app/ui/search';
 import Grid from '@/app/ui/grid';
-import {createSelectParams} from "@/app/lib/rust-service";
+import {createSelectParams} from "@/lib/utils";
 
 export default async function Home(props: {
   searchParams?: Promise<{

@@ -1,28 +1,44 @@
+'use server';
+
 import { createHash } from "crypto";
 import { fetchMapMarkers } from "@/app/lib/rust-gateway";
+import {RustRequest, TradeOffer} from "@/types/definitions";
+import {
+  deleteRustRequestByName,
+  deleteTradeOffers,
+  fetchRustRequestByName,
+  fetchTradeOffers as fetchTradeOffersFromCache,
+  saveRustRequest,
+  saveTradeOffers
+} from "@/app/lib/data";
 
-export type TradeOffer = {
-  id?: string;
-  itemId: number;
-  itemQty: number;
-  costItemId: number;
-  costItemQty: number;
-  stockAmount: number;
-  vendingMachineName: string;
-  vendingMachineX: number;
-  vendingMachineY: number;
-  markerId: number;
-};
+const TRADE_OFFERS_EXPIRATION_TIME = 60 * 1000; // 1 minute in milliseconds
+const TRADE_OFFERS_REQUEST_NAME = 'trade_offers';
 
 export async function fetchTradeOffers(): Promise<TradeOffer[]> {
-  const mapMarkers = await fetchMapMarkers();
-  const tradeOffers = convertToTradeOffers(mapMarkers);
+  const rustRequest = await fetchRustRequestByName(TRADE_OFFERS_REQUEST_NAME);
 
-  for (const tradeOffer of tradeOffers) {
-    tradeOffer.id = createTradeOfferId(tradeOffer);
+  if (!rustRequest || isRequestCacheExpired(rustRequest!, TRADE_OFFERS_EXPIRATION_TIME)) {
+    const mapMarkers = await fetchMapMarkers();
+    const tradeOffers = convertToTradeOffers(mapMarkers);
+
+    await deleteTradeOffers();
+    await saveTradeOffers(tradeOffers);
+
+    await deleteRustRequestByName(TRADE_OFFERS_REQUEST_NAME);
+    await saveRustRequest({
+      name: TRADE_OFFERS_REQUEST_NAME,
+      executedAt: new Date().toISOString(),
+    });
+
+    for (const tradeOffer of tradeOffers) {
+      tradeOffer.id = createTradeOfferId(tradeOffer);
+    }
+
+    return tradeOffers;
+  } else {
+    return fetchTradeOffersFromCache();
   }
-
-  return tradeOffers;
 }
 
 function convertToTradeOffers(mapMarkers: any[]): TradeOffer[] {
@@ -63,4 +79,11 @@ function createTradeOfferId(tradeOffer: TradeOffer) {
     + ':' + tradeOffer.costItemQty;
 
   return createHash('sha256').update(stringToHash).digest('hex').slice(0, 16);
+}
+
+function isRequestCacheExpired(rustRequest: RustRequest, expirationTime: number): boolean {
+  const executedAtTime = new Date(rustRequest.executedAt).getTime();
+  const currentTime = Date.now();
+
+  return (currentTime - executedAtTime) >= expirationTime;
 }

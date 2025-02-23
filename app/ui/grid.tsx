@@ -1,4 +1,7 @@
-import {getTradeOffers, SelectParams} from "@/app/lib/rust-service"
+'use server';
+
+import {getTradeOffers} from "@/app/lib/rust-service"
+import {SelectParams} from "@/types/definitions";
 
 export default async function InvoicesTable({ selectParams }: { selectParams: SelectParams }) {
   const tradeOffers = await getTradeOffers(selectParams);

@@ -1,0 +1,47 @@
+import postgres from 'postgres';
+
+const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
+
+async function seedTradeOffers() {
+  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+  await sql`
+    CREATE TABLE trade_offers (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      item_id INTEGER NOT NULL,
+      item_qty INTEGER NOT NULL CHECK (item_qty > 0),
+      cost_item_id INTEGER NOT NULL,
+      cost_item_qty INTEGER NOT NULL CHECK (cost_item_qty > 0),
+      stock_amount INTEGER NOT NULL CHECK (stock_amount >= 0),
+      vending_machine_name TEXT NOT NULL,
+      vending_machine_x DOUBLE PRECISION NOT NULL,
+      vending_machine_y DOUBLE PRECISION NOT NULL,
+      marker_id INTEGER NOT NULL
+    );
+  `;
+}
+
+async function seedRustRequests() {
+  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+  await sql`
+    CREATE TABLE rust_requests (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      name TEXT NOT NULL UNIQUE,
+      executed_at TIMESTAMPTZ NOT NULL
+    );
+  `;
+}
+
+export async function GET() {
+  try {
+    await sql.begin((sql) => [
+      seedTradeOffers(),
+      seedRustRequests(),
+    ]);
+
+    return Response.json({ message: 'Database seeded successfully' });
+  } catch (error) {
+    return Response.json({ error }, { status: 500 });
+  }
+}

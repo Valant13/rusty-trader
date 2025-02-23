@@ -1,24 +1,7 @@
-import { fetchTradeOffers, TradeOffer } from "@/app/lib/rust-client"
+'use server';
 
-export enum SortOrder { Asc, Desc }
-export enum SearchMode { Buy, Sell }
-export type SelectParams = {
-  sortOrder: SortOrder;
-  searchMode: SearchMode;
-  searchQuery?: string;
-};
-
-export function createSelectParams(
-  searchOrder: any,
-  searchMode: any,
-  searchQuery?: any
-): SelectParams {
-  return {
-    sortOrder: searchOrder === 'desc' || searchOrder === 1 ? SortOrder.Desc : SortOrder.Asc,
-    searchMode: searchMode === 'sell' || searchMode === 1 ? SearchMode.Sell : SearchMode.Buy,
-    searchQuery: searchQuery?.toString(),
-  };
-}
+import { fetchTradeOffers } from "@/app/lib/rust-client"
+import {SearchMode, SelectParams, SortOrder, TradeOffer} from "@/types/definitions";
 
 export async function getTradeOffers(selectParams: SelectParams): Promise<TradeOffer[]> {
   const sortOrder = selectParams.sortOrder;

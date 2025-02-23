@@ -6,12 +6,12 @@ import Long from 'long';
 const rustplus = new RustPlus(
   process.env.RUST_SERVER,
   process.env.RUST_PORT,
-  Long.fromBigInt(BigInt(process.env.RUST_PLAYER_ID ?? ''), true),
+  Long.fromBigInt(BigInt(process.env.RUST_PLAYER_ID!), true),
   process.env.RUST_PLAYER_TOKEN
 );
 
 rustplus.on('request', (request: any) => {
-  console.log('RustPlus Request', request)
+  console.log('RustPlus Request:', request)
 });
 
 rustplus.on('error', (err: any) => {

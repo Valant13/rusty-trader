@@ -2,8 +2,9 @@
 
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {useDebouncedCallback} from 'use-debounce';
-import {createSelectParams, SearchMode, SelectParams, SortOrder} from "@/app/lib/rust-service";
 import {useState} from "react";
+import {createSelectParams} from "@/lib/utils";
+import {SearchMode, SelectParams, SortOrder} from "@/types/definitions";
 
 export default function Search({ placeholder }: { placeholder: string }) {
   const searchParams = useSearchParams();
