@@ -1,4 +1,4 @@
-import {SearchMode, SelectParams, SortOrder} from "@/types/definitions";
+import {SearchMode, SelectParams, SortOrder} from "@/app/lib/definitions";
 
 export function createSelectParams(
   searchOrder: any,

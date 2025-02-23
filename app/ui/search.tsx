@@ -3,8 +3,8 @@
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {useDebouncedCallback} from 'use-debounce';
 import {useState} from "react";
-import {createSelectParams} from "@/lib/utils";
-import {SearchMode, SelectParams, SortOrder} from "@/types/definitions";
+import {createSelectParams} from "@/app/lib/utils";
+import {SearchMode, SelectParams, SortOrder} from "@/app/lib/definitions";
 
 export default function Search({ placeholder }: { placeholder: string }) {
   const searchParams = useSearchParams();

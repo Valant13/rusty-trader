@@ -1,7 +1,7 @@
 'use server';
 
 import postgres from 'postgres';
-import {TradeOffer, RustRequest} from "@/types/definitions";
+import {TradeOffer, RustRequest} from "@/app/lib/definitions";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 

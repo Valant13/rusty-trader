@@ -1,7 +1,7 @@
 'use server';
 
 import { fetchTradeOffers } from "@/app/lib/rust-client"
-import {SearchMode, SelectParams, SortOrder, TradeOffer} from "@/types/definitions";
+import {SearchMode, SelectParams, SortOrder, TradeOffer} from "@/app/lib/definitions";
 
 export async function getTradeOffers(selectParams: SelectParams): Promise<TradeOffer[]> {
   const sortOrder = selectParams.sortOrder;

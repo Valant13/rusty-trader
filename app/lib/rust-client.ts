@@ -2,7 +2,7 @@
 
 import { createHash } from "crypto";
 import { fetchMapMarkers } from "@/app/lib/rust-gateway";
-import {RustRequest, TradeOffer} from "@/types/definitions";
+import {RustRequest, TradeOffer} from "@/app/lib/definitions";
 import {
   deleteRustRequestByName,
   deleteTradeOffers,
