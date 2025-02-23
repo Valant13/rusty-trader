@@ -11,20 +11,31 @@ export async function getTradeOffers(selectParams: SelectParams): Promise<TradeO
   const tradeOffers = await fetchTradeOffers();
   let filteredTradeOffers: TradeOffer[];
 
-  if (searchQuery && searchMode === SearchMode.Buy) {
-    filteredTradeOffers = tradeOffers.filter(offer => offer.itemId.toString().includes(searchQuery));
-  } else if (searchQuery && searchMode === SearchMode.Sell) {
-    filteredTradeOffers = tradeOffers.filter(offer => offer.costItemId.toString().includes(searchQuery));
+  if (searchQuery) {
+    if (searchMode === SearchMode.Buy) {
+      filteredTradeOffers = tradeOffers.filter(offer => offer.itemId.toString().includes(searchQuery));
+    } else {
+      filteredTradeOffers = tradeOffers.filter(offer => offer.costItemId.toString().includes(searchQuery));
+    }
   } else {
     filteredTradeOffers = tradeOffers;
   }
 
-  filteredTradeOffers.sort((a, b) =>
-    a.itemId - b.itemId ||
-    a.costItemId - b.costItemId ||
-    a.itemQty - b.itemQty ||
-    a.costItemQty - b.costItemQty
-  );
+  if (searchMode === SearchMode.Buy) {
+    filteredTradeOffers.sort((a, b) =>
+      a.itemId - b.itemId ||
+      a.costItemId - b.costItemId ||
+      a.itemQty - b.itemQty ||
+      a.costItemQty - b.costItemQty
+    );
+  } else {
+    filteredTradeOffers.sort((a, b) =>
+      a.costItemId - b.costItemId ||
+      a.itemId - b.itemId ||
+      a.costItemQty - b.costItemQty ||
+      a.itemQty - b.itemQty
+    );
+  }
 
   if (sortOrder === SortOrder.Desc) {
     filteredTradeOffers.reverse();
