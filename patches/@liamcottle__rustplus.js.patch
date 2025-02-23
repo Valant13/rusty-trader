@@ -1,5 +1,5 @@
 diff --git a/rustplus.js b/rustplus.js
-index 44970966e617ed7e369e251690a714dbd830e5cb..0002f1944f985dc222835f998f66dd4ebbef70ec 100644
+index 44970966e617ed7e369e251690a714dbd830e5cb..ba587ec55477164a3b81b7425d3d7b63071d763c 100644
 --- a/rustplus.js
 +++ b/rustplus.js
 @@ -44,7 +44,7 @@ class RustPlus extends EventEmitter {
@@ -11,3 +11,13 @@ index 44970966e617ed7e369e251690a714dbd830e5cb..0002f1944f985dc222835f998f66dd4e
  
              // make sure existing connection is disconnected before connecting again.
              if(this.websocket){
+@@ -151,6 +151,9 @@ class RustPlus extends EventEmitter {
+             ...data, // merge in provided data for AppRequest
+         });
+ 
++        // explicitly specify the player ID to prevent it from being converted to a number
++        request.playerId = this.playerId;
++
+         // send AppRequest packet to rust server
+         this.websocket.send(this.AppRequest.encode(request).finish());
+ 
