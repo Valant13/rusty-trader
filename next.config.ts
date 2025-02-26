@@ -8,7 +8,10 @@ const nextConfig: NextConfig = {
     '**/*': [
       './rustplus.proto'
     ]
-  }
+  },
+  images: {
+    domains: ['8pvfzj2pgdh2lugb.public.blob.vercel-storage.com'],
+  },
 };
 
 export default nextConfig;

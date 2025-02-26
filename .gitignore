@@ -42,3 +42,5 @@ next-env.d.ts
 
 /.idea
 rustplus.config.json
+var/items/*
+!var/items/.gitkeep
