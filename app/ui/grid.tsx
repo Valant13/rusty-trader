@@ -1,5 +1,6 @@
 'use server';
 
+import Image from 'next/image';
 import {getTradeOffers} from "@/app/lib/rust-service"
 import {SelectParams} from "@/app/lib/definitions";
 
@@ -10,10 +11,12 @@ export default async function InvoicesTable({ selectParams }: { selectParams: Se
     <table>
       <thead>
       <tr>
-        <th>Item ID</th>
-        <th>Item Count</th>
-        <th>Cost Item ID</th>
-        <th>Cost Item Count</th>
+        <th>Item</th>
+        <th></th>
+        <th>Count</th>
+        <th>Currency</th>
+        <th></th>
+        <th>Count</th>
         <th>Stock Amount</th>
         <th>Vending Machine</th>
       </tr>
@@ -22,13 +25,29 @@ export default async function InvoicesTable({ selectParams }: { selectParams: Se
       {tradeOffers?.map((tradeOffer) => (
         <tr key={tradeOffer.id}>
           <td>
-            {tradeOffer.itemId}
+            {tradeOffer.item?.name}
+          </td>
+          <td>
+            <Image
+              src={tradeOffer.item?.imageUrl!}
+              width={28}
+              height={28}
+              alt={tradeOffer.item?.name!}
+            />
           </td>
           <td>
             {tradeOffer.itemQty}
           </td>
           <td>
-            {tradeOffer.costItemId}
+            {tradeOffer.costItem?.name}
+          </td>
+          <td>
+            <Image
+              src={tradeOffer.costItem?.imageUrl!}
+              width={28}
+              height={28}
+              alt={tradeOffer.costItem?.name!}
+            />
           </td>
           <td>
             {tradeOffer.costItemQty}

@@ -6,7 +6,7 @@ async function seedTradeOffers() {
   await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
   await sql`
-    CREATE TABLE trade_offers (
+    CREATE TABLE IF NOT EXISTS trade_offers (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
       item_id INTEGER NOT NULL,
       item_qty INTEGER NOT NULL CHECK (item_qty > 0),
@@ -21,11 +21,24 @@ async function seedTradeOffers() {
   `;
 }
 
+async function seedItems() {
+  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS items (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      item_id INTEGER NOT NULL,
+      image_url TEXT NOT NULL,
+      name TEXT NOT NULL
+    );
+  `;
+}
+
 async function seedRustRequests() {
   await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
   await sql`
-    CREATE TABLE rust_requests (
+    CREATE TABLE IF NOT EXISTS rust_requests (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
       name TEXT NOT NULL UNIQUE,
       executed_at TIMESTAMPTZ NOT NULL
@@ -37,6 +50,7 @@ export async function GET() {
   try {
     await sql.begin((sql) => [
       seedTradeOffers(),
+      seedItems(),
       seedRustRequests(),
     ]);
 

@@ -13,9 +13,9 @@ export async function getTradeOffers(selectParams: SelectParams): Promise<TradeO
 
   if (searchQuery) {
     if (searchMode === SearchMode.Buy) {
-      filteredTradeOffers = tradeOffers.filter(offer => offer.itemId.toString().includes(searchQuery));
+      filteredTradeOffers = tradeOffers.filter(offer => offer.item?.name.includes(searchQuery));
     } else {
-      filteredTradeOffers = tradeOffers.filter(offer => offer.costItemId.toString().includes(searchQuery));
+      filteredTradeOffers = tradeOffers.filter(offer => offer.costItem?.name.includes(searchQuery));
     }
   } else {
     filteredTradeOffers = tradeOffers;
@@ -23,15 +23,15 @@ export async function getTradeOffers(selectParams: SelectParams): Promise<TradeO
 
   if (searchMode === SearchMode.Buy) {
     filteredTradeOffers.sort((a, b) =>
-      a.itemId - b.itemId ||
-      a.costItemId - b.costItemId ||
+      a.item?.name.localeCompare(b.item?.name!) ||
+      a.costItem?.name.localeCompare(b.costItem?.name!) ||
       a.itemQty - b.itemQty ||
       a.costItemQty - b.costItemQty
     );
   } else {
     filteredTradeOffers.sort((a, b) =>
-      a.costItemId - b.costItemId ||
-      a.itemId - b.itemId ||
+      a.costItem?.name.localeCompare(b.costItem?.name!) ||
+      a.item?.name.localeCompare(b.item?.name!) ||
       a.costItemQty - b.costItemQty ||
       a.itemQty - b.itemQty
     );

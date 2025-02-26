@@ -1,7 +1,7 @@
 'use server';
 
 import postgres from 'postgres';
-import {TradeOffer, RustRequest} from "@/app/lib/definitions";
+import {TradeOffer, RustRequest, Item} from "@/app/lib/definitions";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
@@ -26,10 +26,31 @@ export async function deleteTradeOffers() {
   return sql`DELETE FROM trade_offers`;
 }
 
+export async function fetchItemByItemId(itemId: number) {
+  const data = await sql<Item[]>`SELECT id, item_id, image_url, name FROM items WHERE item_id = ${itemId}`;
+
+  return data.length > 0 ? prepareItem(data[0]) : undefined;
+}
+
+export async function saveItems(items: Item[]) {
+  return Promise.all(
+    items.map(
+      (item) => sql`
+        INSERT INTO items (item_id, image_url, name)
+        VALUES (${item.itemId}, ${item.imageUrl}, ${item.name})
+      `,
+    ),
+  );
+}
+
+export async function deleteItems() {
+  return sql`DELETE FROM items`;
+}
+
 export async function fetchRustRequestByName(name: string) {
   const data = await sql<RustRequest[]>`SELECT id, name, executed_at FROM rust_requests WHERE name = ${name}`;
 
-  return data.length > 0 ? prepareRustRequest(data[0]) : null;
+  return data.length > 0 ? prepareRustRequest(data[0]) : undefined;
 }
 
 export async function saveRustRequest(rustRequest: RustRequest) {
@@ -44,7 +65,7 @@ export async function deleteRustRequestByName(name: string) {
   return sql`DELETE FROM rust_requests WHERE name = ${name}`;
 }
 
-function prepareTradeOffers(data: any[]) {
+function prepareTradeOffers(data: any[]): TradeOffer[] {
   return data.map(({
                      id,
                      item_id,
@@ -57,7 +78,7 @@ function prepareTradeOffers(data: any[]) {
                      vending_machine_y,
                      marker_id
   }) => ({
-    id,
+    id: id,
     itemId: item_id,
     itemQty: item_qty,
     costItemId: cost_item_id,
@@ -70,7 +91,16 @@ function prepareTradeOffers(data: any[]) {
   }));
 }
 
-function prepareRustRequest(data: any) {
+function prepareItem(data: any): Item {
+  return {
+    id: data.id,
+    itemId: data.item_id,
+    imageUrl: data.image_url,
+    name: data.name,
+  }
+}
+
+function prepareRustRequest(data: any): RustRequest {
   return {
     id: data.id,
     name: data.name,

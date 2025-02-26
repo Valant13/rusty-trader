@@ -2,10 +2,10 @@
 
 import { createHash } from "crypto";
 import { fetchMapMarkers } from "@/app/lib/rust-gateway";
-import {RustRequest, TradeOffer} from "@/app/lib/definitions";
+import {Item, RustRequest, TradeOffer} from "@/app/lib/definitions";
 import {
   deleteRustRequestByName,
-  deleteTradeOffers,
+  deleteTradeOffers, fetchItemByItemId,
   fetchRustRequestByName,
   fetchTradeOffers as fetchTradeOffersFromCache,
   saveRustRequest,
@@ -22,6 +22,8 @@ export async function fetchTradeOffers(): Promise<TradeOffer[]> {
     const mapMarkers = await fetchMapMarkers();
     const tradeOffers = convertToTradeOffers(mapMarkers);
 
+    await Promise.all(tradeOffers.map(tradeOffer => populateTradeOffer(tradeOffer)));
+
     await deleteTradeOffers();
     await saveTradeOffers(tradeOffers);
 
@@ -37,7 +39,11 @@ export async function fetchTradeOffers(): Promise<TradeOffer[]> {
 
     return tradeOffers;
   } else {
-    return fetchTradeOffersFromCache();
+    const tradeOffers = await fetchTradeOffersFromCache();
+
+    await Promise.all(tradeOffers.map(tradeOffer => populateTradeOffer(tradeOffer)));
+
+    return tradeOffers;
   }
 }
 
@@ -50,7 +56,7 @@ function convertToTradeOffers(mapMarkers: any[]): TradeOffer[] {
     }
 
     for (const sellOrder of mapMarker.sellOrders) {
-      if (sellOrder.itemIsBlueprint || sellOrder.currencyIsBlueprint) {
+      if (sellOrder.itemIsBlueprint || sellOrder.currencyIsBlueprint || !sellOrder.amountInStock) {
         continue;
       }
 
@@ -69,6 +75,28 @@ function convertToTradeOffers(mapMarkers: any[]): TradeOffer[] {
   }
 
   return tradeOffers;
+}
+
+async function populateTradeOffer(tradeOffer: TradeOffer): Promise<void> {
+    tradeOffer.item = await fetchItemByItemId(tradeOffer.itemId);
+
+    if (!tradeOffer.item) {
+      tradeOffer.item = createDummyItem(tradeOffer.itemId);
+    }
+
+    tradeOffer.costItem = await fetchItemByItemId(tradeOffer.costItemId);
+
+    if (!tradeOffer.costItem) {
+      tradeOffer.costItem = createDummyItem(tradeOffer.costItemId);
+    }
+}
+
+function createDummyItem(itemId: number): Item {
+  return {
+    itemId: itemId,
+    imageUrl: '/something.png',
+    name: itemId.toString(),
+  };
 }
 
 function createTradeOfferId(tradeOffer: TradeOffer) {
