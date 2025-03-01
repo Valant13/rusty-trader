@@ -15,7 +15,7 @@ export async function fetchTradeOffers(searchBy?: string, searchQuery?: string) 
     ? sql`WHERE ${allowedColumns[searchBy]} ILIKE ${`%${searchQuery}%`}`
     : sql``;
 
-  const data = await sql<TradeOffer[]>`
+  const data = await sql`
     SELECT 
       trade_offers.*,
       offered_items.id AS item_row_id,
@@ -88,7 +88,7 @@ export async function deleteItems() {
 }
 
 export async function fetchRustRequestByName(name: string) {
-  const data = await sql<RustRequest[]>`SELECT id, name, executed_at FROM rust_requests WHERE name = ${name}`;
+  const data = await sql`SELECT id, name, executed_at FROM rust_requests WHERE name = ${name}`;
 
   return data.length > 0 ? prepareRustRequest(data[0]) : undefined;
 }
@@ -103,6 +103,24 @@ export async function saveRustRequest(rustRequest: RustRequest) {
 
 export async function deleteRustRequestByName(name: string) {
   return sql`DELETE FROM rust_requests WHERE name = ${name}`;
+}
+
+export async function fetchServerSetting(key: string) {
+  const data = await sql`SELECT id, key, value FROM server_settings WHERE key = ${key}`;
+
+  return data.length > 0 ? data[0].value : undefined;
+}
+
+export async function saveServerSetting(key: string, value: string) {
+  return sql`
+    INSERT INTO server_settings (key, value)
+    VALUES (${key}, ${value})
+    ON CONFLICT (key) DO NOTHING
+  `;
+}
+
+export async function deleteServerSettings() {
+  return sql`DELETE FROM server_settings`;
 }
 
 function prepareTradeOffers(data: any[]): TradeOffer[] {

@@ -1,14 +1,17 @@
 'use server';
 
 import { createHash } from "crypto";
-import { fetchMapMarkers } from "@/app/lib/rust-gateway";
+import {fetchMapMarkers, fetchServerInfo} from "@/app/lib/rust-gateway";
 import {Item, RustRequest, TradeOffer} from "@/app/lib/definitions";
 import {
   deleteRustRequestByName,
+  deleteServerSettings,
   deleteTradeOffers,
   fetchRustRequestByName,
+  fetchServerSetting,
   fetchTradeOffers as fetchTradeOffersFromCache,
   saveRustRequest,
+  saveServerSetting,
   saveTradeOffers
 } from "@/app/lib/data";
 
@@ -25,6 +28,11 @@ export async function fetchTradeOffers(searchBy?: string, searchQuery?: string):
     await deleteTradeOffers();
     await saveTradeOffers(tradeOffers);
 
+    const serverSettings = await fetchServerInfo();
+    await deleteServerSettings();
+    await saveServerSetting('name', serverSettings.name);
+    await saveServerSetting('map_size', serverSettings.mapSize);
+
     await deleteRustRequestByName(TRADE_OFFERS_REQUEST_NAME);
     await saveRustRequest({
       name: TRADE_OFFERS_REQUEST_NAME,
@@ -36,6 +44,14 @@ export async function fetchTradeOffers(searchBy?: string, searchQuery?: string):
   filteredTradeOffers.map(tradeOffer => populateTradeOffer(tradeOffer));
 
   return filteredTradeOffers;
+}
+
+export async function fetchServerName(): Promise<string> {
+  return (await fetchServerSetting('name')) ?? '';
+}
+
+export async function fetchServerMapSize(): Promise<number> {
+  return +(await fetchServerSetting('map_size'));
 }
 
 function convertToTradeOffers(mapMarkers: any[]): TradeOffer[] {

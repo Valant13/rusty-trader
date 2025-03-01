@@ -48,12 +48,25 @@ async function seedRustRequests() {
   `;
 }
 
+async function seedServerSettings() {
+  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS server_settings (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      key TEXT NOT NULL UNIQUE,
+      value TEXT NOT NULL
+    );
+  `;
+}
+
 export async function GET() {
   try {
     await sql.begin((sql) => [
       seedItems(),
       seedTradeOffers(),
       seedRustRequests(),
+      seedServerSettings(),
     ]);
 
     return Response.json({ message: 'Database seeded successfully' });

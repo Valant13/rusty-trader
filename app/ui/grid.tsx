@@ -2,44 +2,51 @@
 
 import Image from 'next/image';
 import {getTradeOffers} from "@/app/lib/rust-service"
-import {SelectParams} from "@/app/lib/definitions";
+import {SelectParams, TradeOffer} from "@/app/lib/definitions";
+import {fetchServerMapSize} from "@/app/lib/rust-client";
+import {convertToMapPos} from "@/app/lib/utils";
 
 export default async function InvoicesTable({ selectParams }: { selectParams: SelectParams }) {
   const tradeOffers = await getTradeOffers(selectParams);
+  const mapSize = await fetchServerMapSize();
+
+  function formatTradeOfferPos(tradeOffer: TradeOffer, mapSize: number) {
+    const worldPos = {
+      x: tradeOffer.vendingMachineX,
+      y: tradeOffer.vendingMachineY,
+    };
+
+    const mapPos = convertToMapPos(worldPos, mapSize);
+
+    return `(${mapPos.x}${mapPos.y})`;
+  }
 
   return (
     <table>
       <thead>
       <tr>
-        <th>Item</th>
+        <th>For Sale</th>
         <th></th>
-        <th>Count</th>
-        <th>Currency</th>
+        <th>Cost</th>
         <th></th>
-        <th>Count</th>
         <th>Stock Amount</th>
-        <th>Vending Machine</th>
+        <th>Shop Name</th>
       </tr>
       </thead>
       <tbody>
       {tradeOffers?.map((tradeOffer) => (
         <tr key={tradeOffer.hash}>
           <td>
-            {tradeOffer.item?.name}
-          </td>
-          <td>
             <Image
               src={tradeOffer.item?.imageUrl!}
               width={28}
               height={28}
               alt={tradeOffer.item?.name!}
+              title={tradeOffer.item?.name!}
             />
           </td>
           <td>
-            {tradeOffer.itemQty}
-          </td>
-          <td>
-            {tradeOffer.costItem?.name}
+            ×{tradeOffer.itemQty}
           </td>
           <td>
             <Image
@@ -47,16 +54,17 @@ export default async function InvoicesTable({ selectParams }: { selectParams: Se
               width={28}
               height={28}
               alt={tradeOffer.costItem?.name!}
+              title={tradeOffer.costItem?.name!}
             />
           </td>
           <td>
-            {tradeOffer.costItemQty}
+            ×{tradeOffer.costItemQty}
           </td>
           <td>
             {tradeOffer.stockAmount}
           </td>
           <td>
-            {tradeOffer.vendingMachineName}
+            {formatTradeOfferPos(tradeOffer, mapSize)} {tradeOffer.vendingMachineName}
           </td>
         </tr>
       ))}

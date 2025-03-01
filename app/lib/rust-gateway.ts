@@ -25,11 +25,21 @@ export async function fetchMapMarkers() {
     getMapMarkers: {}
   });
 
-  const mapMarkers = response.mapMarkers.markers;
+  rustplus.disconnect();
+
+  return response.mapMarkers.markers;
+}
+
+export async function fetchServerInfo() {
+  await waitForConnection(rustplus);
+
+  const response = await rustplus.sendRequestAsync({
+    getInfo: {}
+  });
 
   rustplus.disconnect();
 
-  return mapMarkers;
+  return response.info;
 }
 
 export async function sendTeamMessage(message: string) {

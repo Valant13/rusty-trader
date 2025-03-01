@@ -53,6 +53,9 @@ export default function Search({ placeholder }: { placeholder: string }) {
 
   return (
     <div>
+      <button onClick={toggleSearchMode}>
+        {selectParams.searchMode === SearchMode.Sell ? 'Sell' : 'Buy'}
+      </button>
       <input
         placeholder={placeholder}
         onChange={(e) => {
@@ -60,9 +63,6 @@ export default function Search({ placeholder }: { placeholder: string }) {
         }}
         defaultValue={selectParams.searchQuery}
       />
-      <button onClick={toggleSearchMode}>
-        {selectParams.searchMode === SearchMode.Sell ? 'Sell' : 'Buy'}
-      </button>
       <button onClick={toggleSortOrder}>
         {selectParams.sortOrder === SortOrder.Desc ? 'Desc' : 'Asc'}
       </button>
