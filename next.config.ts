@@ -10,7 +10,13 @@ const nextConfig: NextConfig = {
     ]
   },
   images: {
-    domains: ['8pvfzj2pgdh2lugb.public.blob.vercel-storage.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '8pvfzj2pgdh2lugb.public.blob.vercel-storage.com',
+        pathname: '**',
+      },
+    ],
   },
 };
 

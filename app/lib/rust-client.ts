@@ -5,7 +5,7 @@ import { fetchMapMarkers } from "@/app/lib/rust-gateway";
 import {Item, RustRequest, TradeOffer} from "@/app/lib/definitions";
 import {
   deleteRustRequestByName,
-  deleteTradeOffers, fetchItemByItemId,
+  deleteTradeOffers,
   fetchRustRequestByName,
   fetchTradeOffers as fetchTradeOffersFromCache,
   saveRustRequest,
@@ -15,14 +15,12 @@ import {
 const TRADE_OFFERS_EXPIRATION_TIME = 60 * 1000; // 1 minute in milliseconds
 const TRADE_OFFERS_REQUEST_NAME = 'trade_offers';
 
-export async function fetchTradeOffers(): Promise<TradeOffer[]> {
+export async function fetchTradeOffers(searchBy?: string, searchQuery?: string): Promise<TradeOffer[]> {
   const rustRequest = await fetchRustRequestByName(TRADE_OFFERS_REQUEST_NAME);
 
   if (!rustRequest || isRequestCacheExpired(rustRequest!, TRADE_OFFERS_EXPIRATION_TIME)) {
     const mapMarkers = await fetchMapMarkers();
     const tradeOffers = convertToTradeOffers(mapMarkers);
-
-    await Promise.all(tradeOffers.map(tradeOffer => populateTradeOffer(tradeOffer)));
 
     await deleteTradeOffers();
     await saveTradeOffers(tradeOffers);
@@ -32,19 +30,12 @@ export async function fetchTradeOffers(): Promise<TradeOffer[]> {
       name: TRADE_OFFERS_REQUEST_NAME,
       executedAt: new Date().toISOString(),
     });
-
-    for (const tradeOffer of tradeOffers) {
-      tradeOffer.id = createTradeOfferId(tradeOffer);
-    }
-
-    return tradeOffers;
-  } else {
-    const tradeOffers = await fetchTradeOffersFromCache();
-
-    await Promise.all(tradeOffers.map(tradeOffer => populateTradeOffer(tradeOffer)));
-
-    return tradeOffers;
   }
+
+  const filteredTradeOffers = await fetchTradeOffersFromCache(searchBy, searchQuery);
+  filteredTradeOffers.map(tradeOffer => populateTradeOffer(tradeOffer));
+
+  return filteredTradeOffers;
 }
 
 function convertToTradeOffers(mapMarkers: any[]): TradeOffer[] {
@@ -69,7 +60,13 @@ function convertToTradeOffers(mapMarkers: any[]): TradeOffer[] {
         vendingMachineName: mapMarker.name,
         vendingMachineX: mapMarker.x,
         vendingMachineY: mapMarker.y,
-        markerId: mapMarker.id
+        hash: createTradeOfferHash(
+          mapMarker.id,
+          sellOrder.itemId,
+          sellOrder.quantity,
+          sellOrder.currencyId,
+          sellOrder.costPerItem
+        )
       });
     }
   }
@@ -77,14 +74,10 @@ function convertToTradeOffers(mapMarkers: any[]): TradeOffer[] {
   return tradeOffers;
 }
 
-async function populateTradeOffer(tradeOffer: TradeOffer): Promise<void> {
-    tradeOffer.item = await fetchItemByItemId(tradeOffer.itemId);
-
+function populateTradeOffer(tradeOffer: TradeOffer) {
     if (!tradeOffer.item) {
       tradeOffer.item = createDummyItem(tradeOffer.itemId);
     }
-
-    tradeOffer.costItem = await fetchItemByItemId(tradeOffer.costItemId);
 
     if (!tradeOffer.costItem) {
       tradeOffer.costItem = createDummyItem(tradeOffer.costItemId);
@@ -99,12 +92,14 @@ function createDummyItem(itemId: number): Item {
   };
 }
 
-function createTradeOfferId(tradeOffer: TradeOffer) {
-  const stringToHash = tradeOffer.markerId
-    + ':' + tradeOffer.itemId
-    + ':' + tradeOffer.itemQty
-    + ':' + tradeOffer.costItemId
-    + ':' + tradeOffer.costItemQty;
+function createTradeOfferHash(
+  markerId: number,
+  itemId: number,
+  itemQty: number,
+  costItemId: number,
+  costItemQty: number
+) {
+  const stringToHash = `${markerId}|${itemId}|${itemQty}|${costItemId}|${costItemQty}`;
 
   return createHash('sha256').update(stringToHash).digest('hex').slice(0, 16);
 }

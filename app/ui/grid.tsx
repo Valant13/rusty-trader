@@ -23,7 +23,7 @@ export default async function InvoicesTable({ selectParams }: { selectParams: Se
       </thead>
       <tbody>
       {tradeOffers?.map((tradeOffer) => (
-        <tr key={tradeOffer.id}>
+        <tr key={tradeOffer.hash}>
           <td>
             {tradeOffer.item?.name}
           </td>

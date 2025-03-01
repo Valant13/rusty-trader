@@ -16,7 +16,9 @@ async function seedTradeOffers() {
       vending_machine_name TEXT NOT NULL,
       vending_machine_x DOUBLE PRECISION NOT NULL,
       vending_machine_y DOUBLE PRECISION NOT NULL,
-      marker_id INTEGER NOT NULL
+      hash TEXT NOT NULL,
+      CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES items(item_id) ON DELETE CASCADE,
+      CONSTRAINT fk_cost_item FOREIGN KEY (cost_item_id) REFERENCES items(item_id) ON DELETE CASCADE
     );
   `;
 }
@@ -27,7 +29,7 @@ async function seedItems() {
   await sql`
     CREATE TABLE IF NOT EXISTS items (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-      item_id INTEGER NOT NULL,
+      item_id INTEGER NOT NULL UNIQUE,
       image_url TEXT NOT NULL,
       name TEXT NOT NULL
     );
@@ -49,8 +51,8 @@ async function seedRustRequests() {
 export async function GET() {
   try {
     await sql.begin((sql) => [
-      seedTradeOffers(),
       seedItems(),
+      seedTradeOffers(),
       seedRustRequests(),
     ]);
 

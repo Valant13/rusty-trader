@@ -10,7 +10,7 @@ export type TradeOffer = {
   vendingMachineName: string;
   vendingMachineX: number;
   vendingMachineY: number;
-  markerId: number;
+  hash: string;
 };
 
 export type RustRequest = {

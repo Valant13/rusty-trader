@@ -4,41 +4,34 @@ import { fetchTradeOffers } from "@/app/lib/rust-client"
 import {SearchMode, SelectParams, SortOrder, TradeOffer} from "@/app/lib/definitions";
 
 export async function getTradeOffers(selectParams: SelectParams): Promise<TradeOffer[]> {
-  const sortOrder = selectParams.sortOrder;
+  const sortOrder = selectParams.sortOrder === SortOrder.Desc ? -1 : 1;
   const searchMode = selectParams.searchMode;
   const searchQuery = selectParams.searchQuery;
 
-  const tradeOffers = await fetchTradeOffers();
   let filteredTradeOffers: TradeOffer[];
 
   if (searchQuery) {
     if (searchMode === SearchMode.Buy) {
-      filteredTradeOffers = tradeOffers.filter(offer => offer.item?.name.includes(searchQuery));
+      filteredTradeOffers = await fetchTradeOffers('offered_items.name', searchQuery);
     } else {
-      filteredTradeOffers = tradeOffers.filter(offer => offer.costItem?.name.includes(searchQuery));
+      filteredTradeOffers = await fetchTradeOffers('cost_items.name', searchQuery);
     }
   } else {
-    filteredTradeOffers = tradeOffers;
+    filteredTradeOffers = await fetchTradeOffers();
   }
 
   if (searchMode === SearchMode.Buy) {
     filteredTradeOffers.sort((a, b) =>
-      a.item?.name.localeCompare(b.item?.name!) ||
-      a.costItem?.name.localeCompare(b.costItem?.name!) ||
-      a.itemQty - b.itemQty ||
-      a.costItemQty - b.costItemQty
+      a.item?.name.localeCompare(b.item?.name!)! * sortOrder ||
+      a.costItem?.name.localeCompare(b.costItem?.name!)! * sortOrder ||
+      (a.costItemQty / a.itemQty) - (b.costItemQty / b.itemQty)
     );
   } else {
     filteredTradeOffers.sort((a, b) =>
-      a.costItem?.name.localeCompare(b.costItem?.name!) ||
-      a.item?.name.localeCompare(b.item?.name!) ||
-      a.costItemQty - b.costItemQty ||
-      a.itemQty - b.itemQty
+      a.costItem?.name.localeCompare(b.costItem?.name!)! * sortOrder ||
+      a.item?.name.localeCompare(b.item?.name!)! * sortOrder ||
+      (a.costItemQty / a.itemQty) - (b.costItemQty / b.itemQty)
     );
-  }
-
-  if (sortOrder === SortOrder.Desc) {
-    filteredTradeOffers.reverse();
   }
 
   return filteredTradeOffers;
