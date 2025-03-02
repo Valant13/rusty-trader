@@ -5,6 +5,7 @@ import {useDebouncedCallback} from 'use-debounce';
 import {useState} from "react";
 import {createSelectParams} from "@/app/lib/utils";
 import {SearchMode, SelectParams, SortOrder} from "@/app/lib/definitions";
+import {BarsArrowDownIcon, BarsArrowUpIcon} from "@heroicons/react/24/outline";
 
 export default function Search({ placeholder }: { placeholder: string }) {
   const searchParams = useSearchParams();
@@ -52,8 +53,15 @@ export default function Search({ placeholder }: { placeholder: string }) {
   }
 
   return (
-    <div>
-      <button onClick={toggleSearchMode}>
+    <div className="flex w-full lg:w-2/3 mx-auto">
+      <button
+        onClick={toggleSearchMode}
+        className={`flex-none mx-2 w-20 h-10 text-xl uppercase font-extrabold ${
+          selectParams.searchMode === SearchMode.Sell
+            ? 'bg-green-500 text-green-100'
+            : 'bg-red-500 text-red-100'
+        }`}
+      >
         {selectParams.searchMode === SearchMode.Sell ? 'Sell' : 'Buy'}
       </button>
       <input
@@ -62,9 +70,17 @@ export default function Search({ placeholder }: { placeholder: string }) {
           handleSearch(e.target.value);
         }}
         defaultValue={selectParams.searchQuery}
+        className="flex-1 bg-gray-800 px-2"
       />
-      <button onClick={toggleSortOrder}>
-        {selectParams.sortOrder === SortOrder.Desc ? 'Desc' : 'Asc'}
+      <button
+        onClick={toggleSortOrder}
+        className="flex-none mx-2 w-20 h-10 bg-blue-500 text-blue-100"
+      >
+        {
+          selectParams.sortOrder === SortOrder.Desc
+            ? <BarsArrowDownIcon className="size-7 mx-auto"/>
+            : <BarsArrowUpIcon className="size-7 mx-auto"/>
+        }
       </button>
     </div>
   );

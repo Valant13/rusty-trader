@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@liamcottle/push-receiver": "0.0.4",
     "@liamcottle/rustplus.js": "2.5.0",
     "@vercel/blob": "^0.27.1",

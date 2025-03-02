@@ -1,10 +1,10 @@
 'use server';
 
-import Image from 'next/image';
 import {getTradeOffers} from "@/app/lib/rust-service"
 import {SelectParams, TradeOffer} from "@/app/lib/definitions";
 import {fetchServerMapSize} from "@/app/lib/rust-client";
 import {convertToMapPos} from "@/app/lib/utils";
+import Item from "@/app/ui/item";
 
 export default async function InvoicesTable({ selectParams }: { selectParams: SelectParams }) {
   const tradeOffers = await getTradeOffers(selectParams);
@@ -22,52 +22,36 @@ export default async function InvoicesTable({ selectParams }: { selectParams: Se
   }
 
   return (
-    <table>
+    <table className="table w-full lg:w-2/3 mx-auto">
       <thead>
-      <tr>
-        <th>For Sale</th>
-        <th></th>
-        <th>Cost</th>
-        <th></th>
-        <th>Stock Amount</th>
-        <th>Shop Name</th>
+      <tr className="text-xs bg-gray-600 border-x-4 border-gray-800">
+        <th className="py-1">For Sale</th>
+        <th className="py-1">Cost</th>
+        <th className="py-1">Shop</th>
       </tr>
       </thead>
       <tbody>
-      {tradeOffers?.map((tradeOffer) => (
-        <tr key={tradeOffer.hash}>
-          <td>
-            <Image
-              src={tradeOffer.item?.imageUrl!}
-              width={28}
-              height={28}
-              alt={tradeOffer.item?.name!}
-              title={tradeOffer.item?.name!}
-            />
+      {tradeOffers.map((tradeOffer) => (
+        <tr key={tradeOffer.hash} className="bg-gray-700 border-4 border-gray-800">
+          <td className="p-2">
+            <Item item={tradeOffer.item!} qty={tradeOffer.itemQty} />
           </td>
-          <td>
-            ×{tradeOffer.itemQty}
+          <td className="p-2">
+            <Item item={tradeOffer.costItem!} qty={tradeOffer.costItemQty} />
           </td>
-          <td>
-            <Image
-              src={tradeOffer.costItem?.imageUrl!}
-              width={28}
-              height={28}
-              alt={tradeOffer.costItem?.name!}
-              title={tradeOffer.costItem?.name!}
-            />
-          </td>
-          <td>
-            ×{tradeOffer.costItemQty}
-          </td>
-          <td>
-            {tradeOffer.stockAmount}
-          </td>
-          <td>
-            {formatTradeOfferPos(tradeOffer, mapSize)} {tradeOffer.vendingMachineName}
+          <td className="pl-4">
+            <div>
+              <span className="font-extrabold">{formatTradeOfferPos(tradeOffer, mapSize)}</span> {tradeOffer.vendingMachineName}
+            </div>
+            <div>
+              <span className="font-extrabold">Stock:</span> {tradeOffer.stockAmount}
+            </div>
           </td>
         </tr>
       ))}
+      {tradeOffers.length === 0 ? <tr className="bg-gray-700 border-4 border-gray-800">
+        <td className="h-16 text-center font-extrabold" colSpan={3}>Nothing found</td>
+      </tr> : null}
       </tbody>
     </table>
   );
