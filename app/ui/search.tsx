@@ -70,7 +70,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
           handleSearch(e.target.value);
         }}
         defaultValue={selectParams.searchQuery}
-        className="flex-1 bg-gray-800 px-2 rounded-none"
+        className="flex-1 bg-gray-800 px-2 focus:outline-none appearance-none rounded-none"
       />
       <button
         onClick={toggleSortOrder}
