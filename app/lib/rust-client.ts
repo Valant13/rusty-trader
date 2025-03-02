@@ -67,6 +67,11 @@ function convertToTradeOffers(mapMarkers: any[]): TradeOffer[] {
         continue;
       }
 
+      // Remove trash offers
+      if (sellOrder.itemId === sellOrder.currencyId) {
+        continue;
+      }
+
       tradeOffers.push({
         itemId: sellOrder.itemId,
         itemQty: sellOrder.quantity,
