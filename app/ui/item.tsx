@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default async function Item({ item, qty }: { item: TradeItem, qty: number }) {
   return (
-    <div className="relative w-16 h-16 bg-gray-800 p-1 mx-auto">
+    <div className="relative w-16 h-16 bg-gray-500 p-1 mx-auto">
       <Image
         src={item.imageUrl}
         width={56}
