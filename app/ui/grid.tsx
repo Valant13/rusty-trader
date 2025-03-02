@@ -18,7 +18,7 @@ export default async function InvoicesTable({ selectParams }: { selectParams: Se
 
     const mapPos = convertToMapPos(worldPos, mapSize);
 
-    return `(${mapPos.x}${mapPos.y})`;
+    return (<span className="font-extrabold px-1 bg-green-500 text-green-100">{mapPos.x}{mapPos.y}</span>);
   }
 
   return (
@@ -41,7 +41,7 @@ export default async function InvoicesTable({ selectParams }: { selectParams: Se
           </td>
           <td className="pl-4">
             <div>
-              <span className="font-extrabold">{formatTradeOfferPos(tradeOffer, mapSize)}</span> {tradeOffer.vendingMachineName}
+              {formatTradeOfferPos(tradeOffer, mapSize)} {tradeOffer.vendingMachineName}
             </div>
             <div>
               <span className="font-extrabold">Stock:</span> {tradeOffer.stockAmount}
