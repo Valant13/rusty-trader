@@ -56,21 +56,23 @@ export async function fetchServerMapSize(): Promise<number> {
 
 function convertToTradeOffers(mapMarkers: any[]): TradeOffer[] {
   const tradeOffers: TradeOffer[] = [];
-
   for (const mapMarker of mapMarkers) {
     if (mapMarker.type !== 3) {
       continue;
     }
 
+    const usedHashes: string[] = [];
     for (const sellOrder of mapMarker.sellOrders) {
-      if (sellOrder.itemIsBlueprint || sellOrder.currencyIsBlueprint || !sellOrder.amountInStock) {
+      if (!isSellOrderValid(sellOrder)) {
         continue;
       }
 
-      // Remove trash offers
-      if (sellOrder.itemId === sellOrder.currencyId) {
-        continue;
-      }
+      let hash, i = 0;
+      do {
+        hash = createSellOrderHash(mapMarker, sellOrder, i);
+        i++;
+      } while (usedHashes.includes(hash));
+      usedHashes.push(hash);
 
       tradeOffers.push({
         itemId: sellOrder.itemId,
@@ -81,13 +83,7 @@ function convertToTradeOffers(mapMarkers: any[]): TradeOffer[] {
         vendingMachineName: mapMarker.name,
         vendingMachineX: mapMarker.x,
         vendingMachineY: mapMarker.y,
-        hash: createTradeOfferHash(
-          mapMarker.id,
-          sellOrder.itemId,
-          sellOrder.quantity,
-          sellOrder.currencyId,
-          sellOrder.costPerItem
-        )
+        hash: hash
       });
     }
   }
@@ -113,14 +109,18 @@ function createDummyItem(itemId: number): Item {
   };
 }
 
-function createTradeOfferHash(
-  markerId: number,
-  itemId: number,
-  itemQty: number,
-  costItemId: number,
-  costItemQty: number
-) {
-  const stringToHash = `${markerId}|${itemId}|${itemQty}|${costItemId}|${costItemQty}`;
+function isSellOrderValid(sellOrder: any) {
+  if (sellOrder.itemIsBlueprint || sellOrder.currencyIsBlueprint || !sellOrder.amountInStock) {
+    return false;
+  }
+
+  // Filter out trash offers
+  return sellOrder.itemId !== sellOrder.currencyId;
+}
+
+function createSellOrderHash(mapMarker: any, sellOrder: any, i: number = 0) {
+  let stringToHash = `${mapMarker.id}|${sellOrder.itemId}|${sellOrder.quantity}`;
+  stringToHash = `${stringToHash}|${sellOrder.currencyId}|${sellOrder.costPerItem}|${i}`;
 
   return createHash('sha256').update(stringToHash).digest('hex').slice(0, 16);
 }
