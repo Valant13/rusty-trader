@@ -32,7 +32,7 @@ export default async function InvoicesTable({ selectParams }: { selectParams: Se
       </thead>
       <tbody>
       {tradeOffers.map((tradeOffer) => (
-        <tr key={tradeOffer.hash} className="bg-gray-700 border-y-4 border-gray-800">
+        <tr key={tradeOffer.id} className="bg-gray-700 border-y-4 border-gray-800">
           <td className="p-2">
             <Item item={tradeOffer.item!} qty={tradeOffer.itemQty} />
           </td>
