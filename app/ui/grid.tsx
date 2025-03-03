@@ -39,7 +39,7 @@ export default async function InvoicesTable({ selectParams }: { selectParams: Se
           <td className="p-2">
             <Item item={tradeOffer.costItem!} qty={tradeOffer.costItemQty} />
           </td>
-          <td className="pl-4">
+          <td className="pl-2 text-sm">
             <div>
               {formatTradeOfferPos(tradeOffer, mapSize)} {tradeOffer.vendingMachineName}
             </div>

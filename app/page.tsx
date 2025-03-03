@@ -17,7 +17,7 @@ export default async function Home(props: {
   return (
     <div>
       <div className="sticky top-0 bg-gray-600 pb-2 z-20 border-b-4 border-gray-800">
-        <h1 className="text-center text-xl">{serverName}</h1>
+        <h1 className="text-center text-lg">{serverName}</h1>
         <Search placeholder="Search offers..."/>
       </div>
       <Grid selectParams={selectParams}/>
