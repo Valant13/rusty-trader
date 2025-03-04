@@ -5,7 +5,6 @@ import {useDebouncedCallback} from 'use-debounce';
 import {useState} from "react";
 import {createSelectParams} from "@/app/lib/utils";
 import {Filter, SearchMode, SelectParams} from "@/app/lib/definitions";
-import {AdjustmentsHorizontalIcon} from "@heroicons/react/24/outline";
 import FilterMenu from "@/app/ui/filter-menu";
 
 export default function Search({ placeholder }: { placeholder: string }) {
@@ -87,9 +86,15 @@ export default function Search({ placeholder }: { placeholder: string }) {
       />
       <button
         onClick={toggleFilter}
-        className="flex-none mx-2 w-20 h-10 bg-blue-500 hover:bg-blue-600 text-blue-100 hover:text-blue-200"
+        className="flex-none mx-2 w-20 h-10 text-xl uppercase font-extrabold
+        bg-blue-500 hover:bg-blue-600 text-blue-100 hover:text-blue-200"
       >
-        <AdjustmentsHorizontalIcon className="size-7 mx-auto"/>
+        {selectParams.filter === 0 ? "ALL" :
+          selectParams.filter === 1 ? "WPN" :
+            selectParams.filter === 2 ? "TOOL" :
+              selectParams.filter === 3 ? "CLO" :
+                selectParams.filter === 4 ? "RES" :
+                  selectParams.filter === 5 ? "FOOD" : ""}
       </button>
       {filterVisible && (
         <FilterMenu handleFilterSelect={handleFilterSelect} selectedFilter={selectParams.filter}/>
