@@ -74,6 +74,10 @@ function prepareItem(data: any, imageUrlMap: {[k: string]: string}): Item {
 }
 
 function getItemCategory(data: any): number {
+  if (data.shortname === 'scrap') {
+    return 0;
+  }
+
   switch (data.Category) {
     case 'Weapon':
     case 'Ammunition':
