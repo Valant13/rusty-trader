@@ -1,12 +1,14 @@
-import {SearchMode, SelectParams, SortOrder} from "@/app/lib/definitions";
+import {Filter, SearchMode, SelectParams} from "@/app/lib/definitions";
 
 export function createSelectParams(
-  searchOrder: any,
+  filter: any,
   searchMode: any,
   searchQuery?: any
 ): SelectParams {
+  const filterNumber = Number(filter);
+
   return {
-    sortOrder: searchOrder === 'desc' || searchOrder === 1 ? SortOrder.Desc : SortOrder.Asc,
+    filter: !Number.isNaN(filterNumber) && filterNumber in Filter ? filterNumber as Filter : Filter.All,
     searchMode: searchMode === 'sell' || searchMode === 1 ? SearchMode.Sell : SearchMode.Buy,
     searchQuery: searchQuery?.toString(),
   };

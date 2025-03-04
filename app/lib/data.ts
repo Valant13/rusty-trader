@@ -1,19 +1,27 @@
 'use server';
 
-import postgres, {PendingQuery, Row} from 'postgres';
-import {TradeOffer, RustRequest, Item} from "@/app/lib/definitions";
+import postgres from 'postgres';
+import {TradeOffer, RustRequest, Item, SelectParams, SearchMode} from "@/app/lib/definitions";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
-export async function fetchTradeOffers(searchBy?: string, searchQuery?: string) {
-  const allowedColumns: {[k: string]: PendingQuery<Row[]>} = {
-    'offered_items.name': sql`offered_items.name`,
-    'cost_items.name': sql`cost_items.name`,
+export async function fetchTradeOffers(selectParams: SelectParams) {
+  const columns = {
+    [SearchMode.Buy]: { name: sql`offered_items.name`, category: sql`offered_items.category` },
+    [SearchMode.Sell]: { name: sql`cost_items.name`, category: sql`cost_items.category` },
   };
 
-  const whereClause = searchBy && searchQuery && allowedColumns.hasOwnProperty(searchBy)
-    ? sql`WHERE ${allowedColumns[searchBy]} ILIKE ${`%${searchQuery}%`}`
-    : sql``;
+  let whereClause = sql``;
+
+  if (selectParams.searchQuery) {
+    whereClause = sql`WHERE ${columns[selectParams.searchMode].name} ILIKE ${`%${selectParams.searchQuery}%`}`;
+  }
+
+  if (selectParams.filter) {
+    whereClause = whereClause
+      ? sql`${whereClause} AND ${columns[selectParams.searchMode].category} = ${selectParams.filter}`
+      : sql`WHERE ${columns[selectParams.searchMode].category} = ${selectParams.filter}`;
+  }
 
   const data = await sql`
     SELECT 
@@ -21,9 +29,11 @@ export async function fetchTradeOffers(searchBy?: string, searchQuery?: string) 
       offered_items.id AS item_row_id,
       offered_items.image_url AS item_image_url,
       offered_items.name AS item_name,
+      offered_items.category AS item_category,
       cost_items.id AS cost_item_row_id,
       cost_items.image_url AS cost_item_image_url,
-      cost_items.name AS cost_item_name
+      cost_items.name AS cost_item_name,
+      cost_items.category AS cost_item_category
     FROM trade_offers
     JOIN items AS offered_items ON trade_offers.item_id = offered_items.item_id
     JOIN items AS cost_items ON trade_offers.cost_item_id = cost_items.item_id
@@ -76,9 +86,9 @@ export async function saveItems(items: Item[]) {
   }
 
   await sql`
-    INSERT INTO items (item_id, image_url, name)
+    INSERT INTO items (item_id, image_url, name, category)
     VALUES ${sql(
-    items.map((item) => [item.itemId, item.imageUrl, item.name])
+    items.map((item) => [item.itemId, item.imageUrl, item.name, item.category])
   )}
   `;
 }
@@ -146,6 +156,7 @@ function prepareTradeOffers(data: any[]): TradeOffer[] {
         itemId: row.item_id,
         imageUrl: row.item_image_url,
         name: row.item_name,
+        category: row.item_category,
       };
     }
 
@@ -155,6 +166,7 @@ function prepareTradeOffers(data: any[]): TradeOffer[] {
         itemId: row.cost_item_id,
         imageUrl: row.cost_item_image_url,
         name: row.cost_item_name,
+        category: row.cost_item_category,
       };
     }
 

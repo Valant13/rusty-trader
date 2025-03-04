@@ -2,7 +2,7 @@
 
 import { createHash } from "crypto";
 import {fetchMapMarkers, fetchServerInfo} from "@/app/lib/rust-gateway";
-import {Item, RustRequest, TradeOffer} from "@/app/lib/definitions";
+import {Item, RustRequest, SelectParams, TradeOffer} from "@/app/lib/definitions";
 import {
   deleteRustRequestByName,
   deleteServerSettings,
@@ -18,7 +18,7 @@ import {
 const TRADE_OFFERS_EXPIRATION_TIME = 60 * 1000; // 1 minute in milliseconds
 const TRADE_OFFERS_REQUEST_NAME = 'trade_offers';
 
-export async function fetchTradeOffers(searchBy?: string, searchQuery?: string): Promise<TradeOffer[]> {
+export async function fetchTradeOffers(selectParams: SelectParams): Promise<TradeOffer[]> {
   const rustRequest = await fetchRustRequestByName(TRADE_OFFERS_REQUEST_NAME);
 
   if (!rustRequest || isRequestCacheExpired(rustRequest!, TRADE_OFFERS_EXPIRATION_TIME)) {
@@ -40,7 +40,7 @@ export async function fetchTradeOffers(searchBy?: string, searchQuery?: string):
     });
   }
 
-  const filteredTradeOffers = await fetchTradeOffersFromCache(searchBy, searchQuery);
+  const filteredTradeOffers = await fetchTradeOffersFromCache(selectParams);
   filteredTradeOffers.map(tradeOffer => populateTradeOffer(tradeOffer));
 
   return filteredTradeOffers;
@@ -106,6 +106,7 @@ function createDummyItem(itemId: number): Item {
     itemId: itemId,
     imageUrl: '/something.png',
     name: itemId.toString(),
+    category: 0
   };
 }
 

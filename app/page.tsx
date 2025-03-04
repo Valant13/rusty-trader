@@ -5,13 +5,13 @@ import {fetchServerName} from "@/app/lib/rust-client";
 
 export default async function Home(props: {
   searchParams?: Promise<{
-    order?: string;
+    filter?: string;
     mode?: string;
     query?: string;
   }>;
 }) {
   const searchParams = await props.searchParams;
-  const selectParams = createSelectParams(searchParams?.order, searchParams?.mode, searchParams?.query);
+  const selectParams = createSelectParams(searchParams?.filter, searchParams?.mode, searchParams?.query);
   const serverName = fetchServerName();
 
   return (

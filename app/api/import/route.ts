@@ -69,5 +69,26 @@ function prepareItem(data: any, imageUrlMap: {[k: string]: string}): Item {
     itemId: data.itemid,
     imageUrl: imageUrlMap[imagePath] ?? '/something.png',
     name: data.Name,
+    category: getItemCategory(data),
   };
+}
+
+function getItemCategory(data: any): number {
+  switch (data.Category) {
+    case 'Weapon':
+    case 'Ammunition':
+      return 1;
+    case 'Tool':
+      return 2;
+    case 'Attire':
+      return 3;
+    case 'Resources':
+    case 'Component':
+      return 4;
+    case 'Food':
+    case 'Medical':
+      return 5;
+    default:
+      return 0;
+  }
 }

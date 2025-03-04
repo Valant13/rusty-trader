@@ -19,11 +19,19 @@ export type RustRequest = {
   executedAt: string;
 };
 
-export enum SortOrder { Asc, Desc }
+export enum Filter {
+  All,
+  Weapons,
+  Tools,
+  Clothing,
+  Resources,
+  Food,
+}
+
 export enum SearchMode { Buy, Sell }
 
 export type SelectParams = {
-  sortOrder: SortOrder;
+  filter: Filter;
   searchMode: SearchMode;
   searchQuery?: string;
 };
@@ -33,4 +41,5 @@ export type Item = {
   itemId: number;
   imageUrl: string;
   name: string;
+  category: number;
 };

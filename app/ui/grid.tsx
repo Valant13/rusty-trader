@@ -25,9 +25,9 @@ export default async function InvoicesTable({ selectParams }: { selectParams: Se
     <table className="table w-full lg:w-2/3 mx-auto">
       <thead>
       <tr className="text-xs bg-gray-600">
-        <th className="py-1">For Sale</th>
-        <th className="py-1">Cost</th>
-        <th className="py-1">Shop</th>
+        <th className="py-1 lg:w-1/3">For Sale</th>
+        <th className="py-1 lg:w-1/3">Cost</th>
+        <th className="py-1 w-full">Shop</th>
       </tr>
       </thead>
       <tbody>
@@ -49,9 +49,11 @@ export default async function InvoicesTable({ selectParams }: { selectParams: Se
           </td>
         </tr>
       ))}
-      {tradeOffers.length === 0 ? <tr className="bg-gray-700 border-y-4 border-gray-800">
-        <td className="h-16 text-center font-extrabold" colSpan={3}>Nothing found</td>
-      </tr> : null}
+      {tradeOffers.length === 0 && (
+        <tr className="bg-gray-700 border-y-4 border-gray-800">
+          <td className="h-16 text-center font-extrabold" colSpan={3}>Nothing found</td>
+        </tr>
+      )}
       </tbody>
     </table>
   );

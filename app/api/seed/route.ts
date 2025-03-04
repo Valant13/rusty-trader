@@ -31,7 +31,8 @@ async function seedItems() {
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
       item_id INTEGER NOT NULL UNIQUE,
       image_url TEXT NOT NULL,
-      name TEXT NOT NULL
+      name TEXT NOT NULL,
+      category INTEGER NOT NULL
     );
   `;
 }
