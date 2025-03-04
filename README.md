@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# [Rusty Trader](https://rusty-trader.vercel.app/)
 
-## Getting Started
+Rusty Trader is a board designed to enhance your trading experience in Rust.
 
-First, run the development server:
+## Local Development
+
+1. Create a `.env` file and define the required environment variables.
+2. Start the development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
 pnpm dev
 # or
-bun dev
+docker compose up --build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Open [http://localhost:3000](http://localhost:3000) in your browser to access the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Changing the Rust Server
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Join the Rust server in-game.
+2. Open Chrome and use the _Rustplus.py Link Companion_ plugin.
+3. Complete the Steam authentication process.
+4. After authentication, you'll be redirected to a page displaying the required tokens.
+5. Click the pairing button in Rust.
+6. The necessary tokens will now appear on the token page.
+7. In Vercel, navigate to **Settings → Environment Variables** and set the following variables:
+    - `RUST_SERVER`
+    - `RUST_PORT`
+    - `RUST_PLAYER_ID`
+    - `RUST_PLAYER_TOKEN`
+8. Deploy the updated configuration.
 
-## Learn More
+### Verifying the Connection
 
-To learn more about Next.js, take a look at the following resources:
+You can confirm the application is connected to the Rust server by:
+- Accessing the `api/info` endpoint to view server details.
+- Using the `api/test` endpoint to send a test message to team chat (ensure you're in a team).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Updating Rust Items
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Run your local project.
+2. Copy all files from `[Rust Game]/Bundles/items` to `var/items`.
+3. Upload the JSON files and images to Vercel Blob by visiting:
+    - [http://localhost:3000/api/upload](http://localhost:3000/api/upload)
+4. Import the Rust items into the database via:
+    - [http://localhost:3000/api/import](http://localhost:3000/api/import)
 
-## Deploy on Vercel
+This updates the Rust items in the production database.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deploying on Vercel
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. [Deploy](https://nextjs.org/learn/dashboard-app/setting-up-your-database) the project on Vercel and connect it to Neon PostgreSQL.
+2. [Integrate](https://vercel.com/docs/storage/vercel-blob/server-upload) Vercel Blob storage.
+3. Seed the database by accessing the `api/seed` endpoint.
+4. [Import Rust items](#updating-rust-items).
+5. [Connect to the Rust server](#changing-the-rust-server).

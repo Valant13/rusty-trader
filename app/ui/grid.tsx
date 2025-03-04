@@ -25,8 +25,8 @@ export default async function InvoicesTable({ selectParams }: { selectParams: Se
     <table className="table w-full lg:w-2/3 mx-auto">
       <thead>
       <tr className="text-xs bg-gray-600">
-        <th className="py-1 lg:w-1/3">For Sale</th>
-        <th className="py-1 lg:w-1/3">Cost</th>
+        <th className="py-1 min-w-16 lg:w-1/3">For Sale</th>
+        <th className="py-1 min-w-16 lg:w-1/3">Cost</th>
         <th className="py-1 w-full">Shop</th>
       </tr>
       </thead>
