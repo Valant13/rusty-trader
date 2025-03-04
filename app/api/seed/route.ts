@@ -10,6 +10,8 @@ async function seedTradeOffers() {
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
       item_id INTEGER NOT NULL,
       item_qty INTEGER NOT NULL CHECK (item_qty > 0),
+      item_condition REAL NOT NULL,
+      item_max_condition REAL NOT NULL,
       cost_item_id INTEGER NOT NULL,
       cost_item_qty INTEGER NOT NULL CHECK (cost_item_qty > 0),
       stock_amount INTEGER NOT NULL CHECK (stock_amount >= 0),

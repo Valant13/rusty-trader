@@ -34,7 +34,12 @@ export default async function InvoicesTable({ selectParams }: { selectParams: Se
       {tradeOffers.map((tradeOffer) => (
         <tr key={tradeOffer.hash} className="bg-gray-700 border-y-4 border-gray-800">
           <td className="p-2">
-            <Item item={tradeOffer.item!} qty={tradeOffer.itemQty} />
+            <Item
+              item={tradeOffer.item!}
+              qty={tradeOffer.itemQty}
+              condition={tradeOffer.itemCondition}
+              maxCondition={tradeOffer.itemMaxCondition}
+            />
           </td>
           <td className="p-2">
             <Item item={tradeOffer.costItem!} qty={tradeOffer.costItemQty} />

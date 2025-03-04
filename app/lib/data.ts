@@ -52,6 +52,8 @@ export async function saveTradeOffers(tradeOffers: TradeOffer[]) {
     INSERT INTO trade_offers (
       item_id,
       item_qty,
+      item_condition,
+      item_max_condition,
       cost_item_id,
       cost_item_qty,
       stock_amount, 
@@ -64,6 +66,8 @@ export async function saveTradeOffers(tradeOffers: TradeOffer[]) {
     tradeOffers.map((offer) => [
       offer.itemId,
       offer.itemQty,
+      offer.itemCondition,
+      offer.itemMaxCondition,
       offer.costItemId,
       offer.costItemQty,
       offer.stockAmount,
@@ -141,6 +145,8 @@ function prepareTradeOffers(data: any[]): TradeOffer[] {
       id: row.id,
       itemId: row.item_id,
       itemQty: row.item_qty,
+      itemCondition: row.item_condition,
+      itemMaxCondition: row.item_max_condition,
       costItemId: row.cost_item_id,
       costItemQty: row.cost_item_qty,
       stockAmount: row.stock_amount,

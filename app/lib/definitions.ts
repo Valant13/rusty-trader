@@ -3,6 +3,8 @@ export type TradeOffer = {
   itemId: number;
   item?: Item;
   itemQty: number;
+  itemCondition: number;
+  itemMaxCondition: number;
   costItemId: number;
   costItem?: Item;
   costItemQty: number;

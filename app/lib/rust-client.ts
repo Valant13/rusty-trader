@@ -77,6 +77,8 @@ function convertToTradeOffers(mapMarkers: any[]): TradeOffer[] {
       tradeOffers.push({
         itemId: sellOrder.itemId,
         itemQty: sellOrder.quantity,
+        itemCondition: sellOrder.itemCondition,
+        itemMaxCondition: sellOrder.itemConditionMax,
         costItemId: sellOrder.currencyId,
         costItemQty: sellOrder.costPerItem,
         stockAmount: sellOrder.amountInStock,
