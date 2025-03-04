@@ -7,11 +7,11 @@ Rusty Trader is a board designed to enhance your trading experience in Rust.
 1. Create a `.env` file and define the required environment variables.
 2. Start the development server:
 
-```bash
-pnpm dev
-# or
-docker compose up --build
-```
+   ```bash
+   pnpm dev
+   # or
+   docker compose up --build
+   ```
 
 3. Open [http://localhost:3000](http://localhost:3000) in your browser to access the application.
 
