@@ -27,7 +27,7 @@ export default async function Item({ item, qty }: { item: TradeItem, qty: number
           />
           {qty > 1 && <span className="absolute bottom-0 right-0 text-sm px-1">×{qty}</span>}
         </div>
-        <div className="flex-1 flex items-center pl-4">
+        <div className="flex-1 flex items-center normal-case pl-4">
           {item.name}
         </div>
       </div>

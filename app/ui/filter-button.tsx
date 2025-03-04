@@ -13,7 +13,7 @@ export default function FilterButton({
 }) {
   return (
     <button onClick={onClick} className={`w-36 p-2 uppercase font-extrabold flex items-center ${
-      selected ? 'bg-gray-700' : 'bg-transparent'
+      selected ? 'bg-gray-700' : 'bg-transparent hover:bg-gray-800'
     }`}>
       {
         selected

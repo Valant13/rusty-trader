@@ -71,8 +71,8 @@ export default function Search({ placeholder }: { placeholder: string }) {
         onClick={toggleSearchMode}
         className={`flex-none mx-2 w-20 h-10 text-xl uppercase font-extrabold ${
           selectParams.searchMode === SearchMode.Sell
-            ? 'bg-green-500 text-green-100'
-            : 'bg-red-500 text-red-100'
+            ? 'bg-green-500 hover:bg-green-600 text-green-100 hover:text-green-200'
+            : 'bg-red-500 hover:bg-red-600 text-red-100 hover:text-red-200'
         }`}
       >
         {selectParams.searchMode === SearchMode.Sell ? 'Sell' : 'Buy'}
@@ -87,7 +87,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
       />
       <button
         onClick={toggleFilter}
-        className="flex-none mx-2 w-20 h-10 bg-blue-500 text-blue-100"
+        className="flex-none mx-2 w-20 h-10 bg-blue-500 hover:bg-blue-600 text-blue-100 hover:text-blue-200"
       >
         <AdjustmentsHorizontalIcon className="size-7 mx-auto"/>
       </button>
