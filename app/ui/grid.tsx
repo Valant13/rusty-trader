@@ -18,7 +18,7 @@ export default async function InvoicesTable({ selectParams }: { selectParams: Se
 
     const mapPos = convertToMapPos(worldPos, mapSize);
 
-    return (<span className="font-extrabold px-1 bg-green-500 text-green-100">{mapPos.x}{mapPos.y}</span>);
+    return (<span className="font-extrabold px-1 bg-lime-600 text-lime-200">{mapPos.x}{mapPos.y}</span>);
   }
 
   return (

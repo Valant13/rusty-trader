@@ -70,7 +70,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
         onClick={toggleSearchMode}
         className={`flex-none mx-2 w-20 h-10 text-xl uppercase font-extrabold ${
           selectParams.searchMode === SearchMode.Sell
-            ? 'bg-green-500 hover:bg-green-600 text-green-100 hover:text-green-200'
+            ? 'bg-lime-600 hover:bg-lime-700 text-lime-200 hover:text-lime-300'
             : 'bg-red-500 hover:bg-red-600 text-red-100 hover:text-red-200'
         }`}
       >
