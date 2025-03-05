@@ -36,6 +36,8 @@ You can confirm the application is connected to the Rust server by:
 - Accessing the `api/info` endpoint to view server details.
 - Using the `api/test` endpoint to send a test message to team chat (ensure you're in a team).
 
+**Note:** you can use `curl` for triggering the API endpoints.
+
 ## Updating Rust Items
 
 1. Run your local project.
@@ -54,3 +56,10 @@ This updates the Rust items in the production database.
 3. Seed the database by accessing the `api/seed` endpoint.
 4. [Import Rust items](#updating-rust-items).
 5. [Connect to the Rust server](#changing-the-rust-server).
+
+## Future Ideas
+* Implement an ORM.
+* Refactor business logic using OOP principles.
+* Replace utility API endpoints with console commands.
+* Improve the pairing process for better usability.
+* Allow users to switch between servers, similar to the Rust+ app.
