@@ -18,7 +18,7 @@ export async function fetchTradeOffers(selectParams: SelectParams) {
   }
 
   if (selectParams.filter) {
-    whereClause = whereClause
+    whereClause = selectParams.searchQuery
       ? sql`${whereClause} AND ${columns[selectParams.searchMode].category} = ${selectParams.filter}`
       : sql`WHERE ${columns[selectParams.searchMode].category} = ${selectParams.filter}`;
   }
