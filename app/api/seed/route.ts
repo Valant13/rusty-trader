@@ -18,9 +18,7 @@ async function seedTradeOffers() {
       vending_machine_name TEXT NOT NULL,
       vending_machine_x DOUBLE PRECISION NOT NULL,
       vending_machine_y DOUBLE PRECISION NOT NULL,
-      hash TEXT NOT NULL,
-      CONSTRAINT fk_item FOREIGN KEY (item_id) REFERENCES items(item_id) ON DELETE CASCADE,
-      CONSTRAINT fk_cost_item FOREIGN KEY (cost_item_id) REFERENCES items(item_id) ON DELETE CASCADE
+      hash TEXT NOT NULL
     );
   `;
 }

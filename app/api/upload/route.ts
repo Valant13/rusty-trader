@@ -9,11 +9,11 @@ export async function GET() {
   console.log('Done!');
 
   console.log('Uploading JSON files...');
-  const dataPaths = await uploadFiles('var/items', '.json', 'items/data', 100);
+  const dataPaths = await uploadFiles('var/items', '.json', 'items/data', 64);
   console.log('Done!');
 
   console.log('Uploading images...');
-  const imagePaths = await uploadFiles('var/items', '.png', 'items/images', 100);
+  const imagePaths = await uploadFiles('var/items', '.png', 'items/images', 64);
   console.log('Done!');
 
   return NextResponse.json({

@@ -35,8 +35,8 @@ export async function fetchTradeOffers(selectParams: SelectParams) {
       cost_items.name AS cost_item_name,
       cost_items.category AS cost_item_category
     FROM trade_offers
-    JOIN items AS offered_items ON trade_offers.item_id = offered_items.item_id
-    JOIN items AS cost_items ON trade_offers.cost_item_id = cost_items.item_id
+    LEFT JOIN items AS offered_items ON trade_offers.item_id = offered_items.item_id
+    LEFT JOIN items AS cost_items ON trade_offers.cost_item_id = cost_items.item_id
     ${whereClause}
   `;
 
