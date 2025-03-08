@@ -2,13 +2,14 @@
 
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {useDebouncedCallback} from 'use-debounce';
-import {useState} from "react";
+import {useRef, useState} from "react";
 import {createSelectParams} from "@/app/lib/utils";
 import {Filter, SearchMode, SelectParams} from "@/app/lib/definitions";
 import FilterMenu from "@/app/ui/filter-menu";
 
 export default function Search({ placeholder }: { placeholder: string }) {
   const searchParams = useSearchParams();
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
   const [selectParams, setSelectParams] = useState<SelectParams>(getSelectParamsFromURL());
   const [filterVisible, setFilterVisible] = useState(false);
   const pathname = usePathname();
@@ -37,6 +38,16 @@ export default function Search({ placeholder }: { placeholder: string }) {
     setSelectParams(selectParams);
     setSelectParamsToURL(selectParams);
   }, 300);
+
+  function clearSearch() {
+    if (searchInputRef.current) {
+      searchInputRef.current.value = '';
+    }
+
+    selectParams.searchQuery = '';
+    setSelectParams(selectParams);
+    setSelectParamsToURL(selectParams);
+  }
 
   function getSelectParamsFromURL(): SelectParams {
     const urlParams = new URLSearchParams(searchParams);
@@ -76,14 +87,25 @@ export default function Search({ placeholder }: { placeholder: string }) {
       >
         {selectParams.searchMode === SearchMode.Sell ? 'Sell' : 'Buy'}
       </button>
-      <input
-        placeholder={placeholder}
-        onChange={(e) => {
-          handleSearch(e.target.value);
-        }}
-        defaultValue={selectParams.searchQuery}
-        className="flex-1 bg-gray-800 px-2 focus:outline-none appearance-none rounded-none"
-      />
+      <div className="relative flex-1">
+        <input
+          ref={searchInputRef}
+          placeholder={placeholder}
+          onChange={(e) => {
+            handleSearch(e.target.value);
+          }}
+          defaultValue={selectParams.searchQuery}
+          className="w-full h-full min-w-0 bg-gray-800 px-2 focus:outline-none appearance-none rounded-none"
+        />
+        {selectParams.searchQuery && (
+          <button
+            onClick={clearSearch}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+          >
+            ✕
+          </button>
+        )}
+      </div>
       <button
         onClick={toggleFilter}
         className="flex-none mx-2 w-20 h-10 text-xl uppercase font-extrabold
