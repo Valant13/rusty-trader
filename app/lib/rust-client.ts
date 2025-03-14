@@ -18,10 +18,44 @@ import {
 const TRADE_OFFERS_EXPIRATION_TIME = 60 * 1000; // 1 minute in milliseconds
 const TRADE_OFFERS_REQUEST_NAME = 'trade_offers';
 
+let isCacheUpdating = false;
+let cacheCallbacks: { resolve: () => void; reject: (reason: any | undefined) => void }[] = [];
+
 export async function fetchTradeOffers(selectParams: SelectParams): Promise<TradeOffer[]> {
+  await waitForTradeOfferUpdate();
+
+  const filteredTradeOffers = await fetchTradeOffersFromCache(selectParams);
+  filteredTradeOffers.map(tradeOffer => populateTradeOffer(tradeOffer));
+
+  return filteredTradeOffers;
+}
+
+export async function fetchServerName(): Promise<string> {
+  return (await fetchServerSetting('name')) ?? '';
+}
+
+export async function fetchServerMapSize(): Promise<number> {
+  return +(await fetchServerSetting('map_size'));
+}
+
+async function waitForTradeOfferUpdate(): Promise<void> {
   const rustRequest = await fetchRustRequestByName(TRADE_OFFERS_REQUEST_NAME);
 
   if (!rustRequest || isRequestCacheExpired(rustRequest!, TRADE_OFFERS_EXPIRATION_TIME)) {
+    return new Promise((resolve, reject) => {
+      cacheCallbacks.push({resolve, reject});
+
+      if (!isCacheUpdating) {
+        updateTradeOfferCache();
+      }
+    });
+  }
+}
+
+async function updateTradeOfferCache() {
+  isCacheUpdating = true;
+
+  try {
     const mapMarkers = await fetchMapMarkers();
     const tradeOffers = convertToTradeOffers(mapMarkers);
 
@@ -38,20 +72,16 @@ export async function fetchTradeOffers(selectParams: SelectParams): Promise<Trad
       name: TRADE_OFFERS_REQUEST_NAME,
       executedAt: new Date().toISOString(),
     });
+
+    isCacheUpdating = false;
+    cacheCallbacks.map(({ resolve, reject }) => resolve());
+    cacheCallbacks = [];
+  } catch (error) {
+    isCacheUpdating = false;
+    cacheCallbacks.map(({ resolve, reject }) => reject(error));
+    cacheCallbacks = [];
+    throw error;
   }
-
-  const filteredTradeOffers = await fetchTradeOffersFromCache(selectParams);
-  filteredTradeOffers.map(tradeOffer => populateTradeOffer(tradeOffer));
-
-  return filteredTradeOffers;
-}
-
-export async function fetchServerName(): Promise<string> {
-  return (await fetchServerSetting('name')) ?? '';
-}
-
-export async function fetchServerMapSize(): Promise<number> {
-  return +(await fetchServerSetting('map_size'));
 }
 
 function convertToTradeOffers(mapMarkers: any[]): TradeOffer[] {
