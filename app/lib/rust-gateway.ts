@@ -25,8 +25,6 @@ export async function fetchMapMarkers() {
     getMapMarkers: {}
   });
 
-  rustplus.disconnect();
-
   return response.mapMarkers.markers;
 }
 
@@ -37,26 +35,24 @@ export async function fetchServerInfo() {
     getInfo: {}
   });
 
-  rustplus.disconnect();
-
   return response.info;
 }
 
 export async function sendTeamMessage(message: string) {
   await waitForConnection(rustplus);
 
-  const response = await rustplus.sendRequestAsync({
+  return await rustplus.sendRequestAsync({
     sendTeamMessage: {
       message: message,
     }
   });
-
-  rustplus.disconnect();
-
-  return response;
 }
 
-function waitForConnection(rustplus: any): Promise<void> {
+async function waitForConnection(rustplus: any): Promise<void> {
+  if (rustplus.websocket && rustplus.isConnected()) {
+    return;
+  }
+
   return new Promise((resolve, reject) => {
     const handleConnected = () => {
       rustplus.removeListener('connected', handleConnected);
